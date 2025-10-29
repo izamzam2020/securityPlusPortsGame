@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PortGuess - Security+ Port Quiz</title>
+  <style>
+    :root {
+      --bg: #0f1226;
+      --card: #161a36;
+      --muted: #8b90b3;
+      --text: #e8e9f4;
+      --accent: #7c5cff;
+      --accent-2: #00e7aa;
+      --danger: #ff4d6d;
+      --ok: #3ddc97;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(1200px 800px at 10% -10%, #1b2047, transparent),
+                  radial-gradient(1200px 800px at 110% 10%, #0b1438, transparent),
+                  var(--bg);
+      overflow-x: hidden;
+    }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 24px; }
+    header {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 16px 0 24px 0; flex-wrap: wrap; min-width: 0;
+    }
+    .brand { font-weight: 700; letter-spacing: 0.3px; font-size: 20px; min-width: 0; }
+    .brand em { font-style: normal; color: var(--accent-2); }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 20px; backdrop-filter: blur(6px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+    }
+    .controls { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; }
+    label { color: var(--muted); font-size: 14px; }
+    select, input[type="number"], input[type="text"] {
+      background: #0f1431; color: var(--text); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 10px 12px; font-size: 14px; min-width: 160px;
+    }
+    button {
+      background: linear-gradient(135deg, var(--accent), #9f7bff);
+      color: white; border: none; border-radius: 12px; padding: 12px 16px; font-weight: 600; cursor: pointer;
+      box-shadow: 0 8px 24px rgba(124,92,255,0.35);
+    }
+    button.secondary { background: #262b59; box-shadow: none; }
+    button.ghost { background: transparent; border: 1px solid rgba(255,255,255,0.18); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .meta { color: var(--muted); font-size: 13px; }
+    .question { font-size: 22px; margin: 10px 0 14px; font-weight: 650; line-height: 1.3; }
+    .options { display: grid; gap: 10px; margin-top: 12px; }
+    .opt {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      background: #12163a; border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: transform .06s ease;
+      width: 100%;
+      word-break: break-word;
+    }
+    .opt:hover { transform: translateY(-1px); }
+    .opt.correct { border-color: rgba(61,220,151,0.9); box-shadow: 0 0 0 2px rgba(61,220,151,0.25) inset; }
+    .opt.wrong { border-color: rgba(255,77,109,0.9); box-shadow: 0 0 0 2px rgba(255,77,109,0.25) inset; }
+    .tag { font-size: 12px; padding: 4px 8px; border-radius: 999px; background: #23295f; color: #cbd0ff; }
+    .footer { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; gap: 12px; }
+    .score { font-weight: 700; }
+    .pill { padding: 6px 10px; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; color: #cfd3ff; font-size: 12px; }
+    .grid2 { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 720px) { .grid2 { grid-template-columns: 1.1fr 0.9fr; } }
+    .list { font-size: 14px; line-height: 1.55; color: #cfd3ff; max-height: 440px; overflow: auto; padding-right: 6px; overflow-x: auto; }
+    .list table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .list th, .list td { text-align: left; padding: 6px 8px; border-bottom: 1px dashed rgba(255,255,255,0.08); word-break: break-word; }
+    .list th { position: sticky; top: 0; background: #0f1226; }
+    .hint { color: #9aa0d0; font-size: 13px; }
+
+    /* Mobile responsiveness */
+    @media (max-width: 520px) {
+      .wrap { padding: 16px; }
+      .brand { font-size: 18px; }
+      .question { font-size: 18px; }
+      .card { padding: 16px; }
+      button { padding: 12px 14px; border-radius: 10px; width: 100%; }
+      .opt { padding: 12px; font-size: 15px; }
+      select, input[type="number"], input[type="text"] { min-width: 0; width: 100%; }
+      .row { flex-direction: column; }
+      .footer { flex-direction: column; align-items: stretch; }
+      .footer > div { width: 100%; display: grid; grid-template-columns: 1fr; gap: 8px; }
+      .list { max-height: 50vh; }
+      header { flex-direction: column; align-items: stretch; gap: 8px; }
+      #setup > div:first-child { flex-direction: column; align-items: stretch; }
+      #setup h2 { margin-bottom: 6px; }
+      .pill { width: 100%; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">Port<em>Guess</em> · Security+ Prep</div>
+      <div class="pill" id="sessionInfo">Ready</div>
+    </header>
+
+    <div class="grid2">
+      <section class="card" id="setup">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <h2 style="margin:0;font-size:18px;color:#cfd3ff;">New Game</h2>
+          <button id="startBtn">Start Game</button>
+        </div>
+        <div class="controls" style="margin-top:12px;">
+          <div class="row">
+            <div>
+              <label for="mode">Question mix</label><br>
+              <select id="mode">
+                <option value="both">Both directions</option>
+                <option value="service_to_port">Service → Port</option>
+                <option value="port_to_service">Port → Service</option>
+              </select>
+            </div>
+            <div>
+              <label for="count">Questions</label><br>
+              <input type="number" id="count" min="1" max="40" value="15">
+            </div>
+            <div>
+              <label for="showHints">Hints</label><br>
+              <select id="showHints">
+                <option value="on">Show protocol hint</option>
+                <option value="off">No hints</option>
+              </select>
+            </div>
+          </div>
+          <div class="hint">Questions are multiple-choice with instant feedback. Score is tracked per game.</div>
+        </div>
+      </section>
+
+      <section class="card" id="play" aria-live="polite">
+        <div class="meta" id="progress">No game running</div>
+        <div class="question" id="question">Click Start to begin.</div>
+        <div class="options" id="options"></div>
+        <div class="footer">
+          <div class="score" id="score">Score: 0</div>
+          <div style="display:flex;gap:8px;">
+            <button class="secondary" id="nextBtn" disabled>Next</button>
+            <button class="ghost" id="restartBtn" disabled>Restart</button>
+            <button class="ghost" id="showRefBtn" style="display:none;">Show Study Aid</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="ref">
+        <h2 style="margin:0 0 10px 0;font-size:18px;color:#cfd3ff;">Reference (Study Aid)</h2>
+        <div class="list">
+          <table id="refTable">
+            <thead>
+              <tr><th>Port</th><th>Protocol</th><th>Service</th><th>Description</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // Dataset is now external: ports.json
+    // Each entry: { service, ports: number[], protocol: 'TCP'|'UDP'|'TCP/UDP', description }
+    let PORTS = [];
+
+    // --- Utilities ---
+    const rand = (n) => Math.floor(Math.random() * n);
+    const shuffle = (arr) => arr.map(v => [Math.random(), v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]);
+    const formatPorts = (ports) => ports.length > 1 ? ports.join('/') : String(ports[0]);
+    const pickUnique = (pool, count, excludeIdx) => {
+      const idxs = new Set();
+      while (idxs.size < count) {
+        const i = rand(pool.length);
+        if (i === excludeIdx) continue;
+        idxs.add(i);
+      }
+      return [...idxs].map(i => pool[i]);
+    };
+
+    // --- Game State ---
+    let state = {
+      running: false,
+      mode: 'both',
+      showHints: true,
+      total: 15,
+      qIndex: 0,
+      score: 0,
+      questions: []
+    };
+
+    // --- Question Builders ---
+    function buildServiceToPort(entry) {
+      const correct = formatPorts(entry.ports);
+      const distractors = pickUnique(PORTS, 3, PORTS.indexOf(entry)).map(e => formatPorts(e.ports));
+      const options = shuffle([correct, ...distractors]);
+      return {
+        type: 'service_to_port',
+        prompt: `What is the well-known port for ${entry.service}?`,
+        hint: entry.protocol,
+        correct,
+        options
+      };
+    }
+
+    function buildPortToService(entry) {
+      const port = entry.ports[rand(entry.ports.length)];
+      const correct = entry.service;
+      const distractors = pickUnique(PORTS, 3, PORTS.indexOf(entry)).map(e => e.service);
+      const options = shuffle([correct, ...distractors]);
+      return {
+        type: 'port_to_service',
+        prompt: `Which service commonly runs on port ${port}?`,
+        hint: entry.protocol,
+        correct,
+        options
+      };
+    }
+
+    function makeQuestion(mode) {
+      const entry = PORTS[rand(PORTS.length)];
+      if (mode === 'service_to_port') return buildServiceToPort(entry);
+      if (mode === 'port_to_service') return buildPortToService(entry);
+      return Math.random() < 0.5 ? buildServiceToPort(entry) : buildPortToService(entry);
+    }
+
+    function createQuestionSet(mode, count) {
+      const qs = [];
+      for (let i = 0; i < count; i++) qs.push(makeQuestion(mode));
+      return qs;
+    }
+
+    // --- Rendering ---
+    const progressEl = document.getElementById('progress');
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const scoreEl = document.getElementById('score');
+    const nextBtn = document.getElementById('nextBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const sessionInfo = document.getElementById('sessionInfo');
+    const refSection = document.getElementById('ref');
+    const showRefBtn = document.getElementById('showRefBtn');
+
+    function setRefVisible(visible) {
+      refSection.style.display = visible ? '' : 'none';
+    }
+
+    function renderRef() {
+      const tbody = document.querySelector('#refTable tbody');
+      tbody.innerHTML = PORTS
+        .slice()
+        .sort((a,b)=>a.ports[0]-b.ports[0])
+        .map(e => `<tr><td>${formatPorts(e.ports)}</td><td>${e.protocol}</td><td>${e.service}</td><td>${e.description}</td></tr>`) 
+        .join('');
+    }
+
+    function renderQuestion() {
+      const q = state.questions[state.qIndex];
+      progressEl.textContent = `Question ${state.qIndex + 1} of ${state.total}`;
+      questionEl.textContent = q.prompt;
+      optionsEl.innerHTML = '';
+      q.options.forEach(opt => {
+        const div = document.createElement('button');
+        div.className = 'opt';
+        div.innerHTML = `<span>${opt}</span>${state.showHints ? `<span class="tag">${q.hint}</span>` : ''}`;
+        div.addEventListener('click', () => onAnswer(div, opt));
+        optionsEl.appendChild(div);
+      });
+      nextBtn.disabled = true;
+      restartBtn.disabled = !state.running;
+      scoreEl.textContent = `Score: ${state.score}`;
+      sessionInfo.textContent = 'In progress';
+      setRefVisible(false); // hide study guide during gameplay
+      showRefBtn.style.display = 'none';
+    }
+
+    function onAnswer(el, value) {
+      const q = state.questions[state.qIndex];
+      const correct = value === q.correct;
+      if (correct) {
+        state.score += 1;
+        el.classList.add('correct');
+      } else {
+        el.classList.add('wrong');
+        // Highlight the correct one
+        [...optionsEl.children].forEach(c => {
+          if (c.textContent.trim().startsWith(q.correct)) c.classList.add('correct');
+        });
+      }
+      // Disable subsequent clicks
+      [...optionsEl.children].forEach(c => c.disabled = true);
+      scoreEl.textContent = `Score: ${state.score}`;
+      nextBtn.disabled = false;
+      if (state.qIndex === state.total - 1) nextBtn.textContent = 'Finish';
+    }
+
+    function next() {
+      if (state.qIndex < state.total - 1) {
+        state.qIndex += 1;
+        renderQuestion();
+      } else {
+        finish();
+      }
+    }
+
+    function finish() {
+      state.running = false;
+      progressEl.textContent = 'Results';
+      const pct = Math.round((state.score / state.total) * 100);
+      questionEl.innerHTML = `You scored <strong>${state.score}</strong> / ${state.total} (${pct}%).`;
+      optionsEl.innerHTML = `<div class="hint">Tip: use the Reference table on the right to review any missed ports.</div>`;
+      nextBtn.disabled = true;
+      nextBtn.textContent = 'Next';
+      restartBtn.disabled = false;
+      sessionInfo.textContent = 'Completed';
+      showRefBtn.style.display = '';
+    }
+
+    // --- Controls ---
+    const startBtn = document.getElementById('startBtn');
+    const modeSel = document.getElementById('mode');
+    const countInp = document.getElementById('count');
+    const showHintsSel = document.getElementById('showHints');
+
+    function start() {
+      state.mode = modeSel.value;
+      state.total = Math.max(1, Math.min(40, (parseInt(countInp.value || '15', 10) || 1)));
+      state.showHints = showHintsSel.value === 'on';
+      state.qIndex = 0;
+      state.score = 0;
+      state.questions = createQuestionSet(state.mode, state.total);
+      state.running = true;
+      renderQuestion();
+    }
+
+    function restart() { start(); }
+
+    // Wire events
+    startBtn.addEventListener('click', start);
+    nextBtn.addEventListener('click', next);
+    restartBtn.addEventListener('click', restart);
+    showRefBtn.addEventListener('click', () => { setRefVisible(true); refSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+
+    // Load dataset and init
+    async function loadPorts() {
+      sessionInfo.textContent = 'Loading data…';
+      startBtn.disabled = true;
+      try {
+        const res = await fetch('ports.json', { cache: 'no-cache' });
+        if (!res.ok) throw new Error('Failed to fetch ports.json');
+        const data = await res.json();
+        if (!Array.isArray(data) || data.length === 0) throw new Error('Empty dataset');
+        PORTS = data;
+        renderRef();
+        setRefVisible(true);
+        sessionInfo.textContent = 'Ready';
+        startBtn.disabled = false;
+      } catch (err) {
+        console.error(err);
+        sessionInfo.textContent = 'Load failed';
+        document.getElementById('question').textContent = 'Error loading dataset. Check ports.json.';
+      }
+    }
+
+    loadPorts();
+  </script>
+</body>
+</html>
+
+

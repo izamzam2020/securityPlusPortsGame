@@ -1,0 +1,41 @@
+[
+  { "service": "FTP", "ports": [20, 21], "protocol": "TCP", "description": "File Transfer Protocol (data, control)" },
+  { "service": "SSH", "ports": [22], "protocol": "TCP", "description": "Secure Shell" },
+  { "service": "Telnet", "ports": [23], "protocol": "TCP", "description": "Text-based remote admin (deprecated)" },
+  { "service": "SMTP", "ports": [25], "protocol": "TCP", "description": "Simple Mail Transfer (sending email)" },
+  { "service": "DNS", "ports": [53], "protocol": "TCP/UDP", "description": "Domain Name System" },
+  { "service": "DHCP", "ports": [67, 68], "protocol": "UDP", "description": "Dynamic Host Configuration (client/server)" },
+  { "service": "TFTP", "ports": [69], "protocol": "UDP", "description": "Trivial FTP" },
+  { "service": "HTTP", "ports": [80], "protocol": "TCP", "description": "Web traffic" },
+  { "service": "Kerberos", "ports": [88], "protocol": "TCP/UDP", "description": "Authentication (AD)" },
+  { "service": "POP3", "ports": [110], "protocol": "TCP", "description": "Retrieve email" },
+
+  { "service": "SUN RPC / Portmapper", "ports": [111], "protocol": "TCP/UDP", "description": "Port service discovery" },
+  { "service": "NNTP", "ports": [119], "protocol": "TCP", "description": "Network News Transfer Protocol" },
+  { "service": "NTP", "ports": [123], "protocol": "UDP", "description": "Network Time Protocol" },
+  { "service": "RPC (MS EPMAP)", "ports": [135], "protocol": "TCP", "description": "Microsoft RPC endpoint mapper" },
+  { "service": "NetBIOS-NS (NBNS)", "ports": [137], "protocol": "TCP/UDP", "description": "NetBIOS name service (deprecated)" },
+  { "service": "NetBIOS-DGM (NBT)", "ports": [138], "protocol": "UDP", "description": "NetBIOS datagram service (deprecated)" },
+  { "service": "SMBv1", "ports": [139], "protocol": "TCP", "description": "Server Message Block v1" },
+  { "service": "IMAP4", "ports": [143], "protocol": "TCP", "description": "Retrieve email (IMAP)" },
+  { "service": "SNMP", "ports": [161, 162], "protocol": "UDP", "description": "Simple Network Management Protocol (agent/trap)" },
+
+  { "service": "LDAP", "ports": [389], "protocol": "TCP", "description": "Directory access (unencrypted)" },
+  { "service": "LDAPS", "ports": [636], "protocol": "TCP", "description": "LDAP over TLS/SSL" },
+  { "service": "HTTPS", "ports": [443], "protocol": "TCP", "description": "HTTP over TLS/SSL" },
+  { "service": "SMBv2+", "ports": [445], "protocol": "TCP", "description": "Server Message Block v2 and later" },
+  { "service": "IKE", "ports": [500], "protocol": "UDP", "description": "IPsec key exchange" },
+  { "service": "Syslog", "ports": [514], "protocol": "UDP", "description": "Centralized logging" },
+  { "service": "SMTP (secure)", "ports": [587], "protocol": "TCP", "description": "Encrypted SMTP (submission)" },
+  { "service": "IMAPS", "ports": [993], "protocol": "TCP", "description": "IMAP over SSL/TLS" },
+  { "service": "POP3S", "ports": [995], "protocol": "TCP", "description": "POP3 over SSL/TLS" },
+
+  { "service": "MSSQL", "ports": [1433], "protocol": "TCP", "description": "Microsoft SQL Server" },
+  { "service": "Oracle SQL", "ports": [1521], "protocol": "TCP", "description": "Oracle listener" },
+  { "service": "PPTP", "ports": [1723], "protocol": "TCP", "description": "Point-to-Point Tunneling Protocol" },
+  { "service": "MySQL", "ports": [3306], "protocol": "TCP", "description": "MySQL database" },
+  { "service": "RDP", "ports": [3389], "protocol": "TCP", "description": "Remote Desktop Protocol" },
+  { "service": "SIP", "ports": [5060, 5061], "protocol": "TCP/UDP", "description": "Session Initiation Protocol (VoIP)" }
+]
+
+
